@@ -40,8 +40,13 @@ export default function Projects() {
                   </ul>
                 )}
 
-                {(p.repo || p.demo) && (
+                {(p.links?.length || p.repo || p.demo) && (
                   <div className="card__links">
+                    {p.links?.map((l) => (
+                      <a key={l.url} href={l.url} target="_blank" rel="noreferrer">
+                        {l.label}
+                      </a>
+                    ))}
                     {p.repo && (
                       <a href={p.repo} target="_blank" rel="noreferrer">
                         Code

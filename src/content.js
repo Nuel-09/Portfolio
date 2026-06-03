@@ -6,78 +6,58 @@
 // =============================================================
 
 export const profile = {
-  name: "Your Name", // TODO: your full name
-  title: "Backend Engineer", // TODO: your role / title
-  bio: "Backend engineer focused on building reliable APIs and services. I spent the HNG internship shipping real systems under real deadlines.", // TODO
-  location: "City, Country (GMT+1)", // TODO: location or timezone
-  email: "you@example.com", // TODO
-  github: "https://github.com/your-username", // TODO
-  linkedin: "https://linkedin.com/in/your-username", // TODO
+  name: "Somtochukwu Emmanuel Umeh", // TODO: your full name
+  title: "Full Stack and DevOps Engineer", // TODO: your role / title
+  bio: "Full Stack and DevOps engineer focused on building reliable APIs and services. I spent the HNG internship shipping real systems under real deadlines.", // TODO
+  location: "Northampton, United Kingdom (GMT+1)", // TODO: location or timezone
+  email: "emmanueldennise99@gmail.com",
+  github: "https://github.com/Nuel-09",
+  linkedin: "https://www.linkedin.com/in/somtochukwu-umeh-3727271aa/",
   twitter: "", // optional, leave "" to hide
   resume: "", // optional link to resume/CV, leave "" to hide
 };
 
-// One entry per significant HNG project/task (stages 1-7).
-// Fill repo/demo/image as you send each GitHub project.
+// One entry per significant project. A project can expose multiple repos via
+// the `links` array (e.g. backend + CLI + web portal). Simpler projects can use
+// the single `repo`/`demo` fields instead. Leave a field "" / [] to hide it.
 export const projects = [
   {
-    name: "Stage 1 — Project Title",
+    name: "Insighta Labs — Queryable Intelligence Engine",
+    description:
+      "A profile-intelligence platform built around a queryable API. It enriches person-profile data (gender, age, nationality) from external providers and exposes advanced filtering, sorting, pagination, and rule-based natural-language search. Shipped with a global CLI and a React web portal as first-class clients.",
+    stack: [
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "Mongoose",
+      "JWT",
+      "GitHub OAuth (PKCE)",
+      "React",
+      "Vite",
+    ],
+    contribution:
+      "Built the full system end to end: the Express/MongoDB API (GitHub OAuth with PKCE, JWT access/refresh with rotation, RBAC, rule-based NL search, streaming CSV ingestion, in-memory query cache with deterministic query normalization, rate limiting, request logging, CI), the global Node.js CLI client, and the React + Vite web portal (HTTP-only cookies, CSRF).",
+    links: [
+      { label: "Backend API", url: "https://github.com/Nuel-09/HNG_STAGE-1" },
+      { label: "CLI", url: "https://github.com/Nuel-09/Insighta-Cli" },
+      { label: "Web Portal", url: "https://github.com/Nuel-09/Insighta-WebPortal" },
+    ],
+    image: "", // screenshot path/URL (leave "" to hide)
+  },
+  // --- Placeholders for upcoming projects. Fill or delete as projects come in. ---
+  {
+    name: "Project Title",
     description: "Short description of what this project does.",
-    stack: ["Node.js", "Express"],
+    stack: ["Node.js"],
     contribution: "What you personally built and owned.",
     repo: "", // GitHub URL (leave "" to hide the link)
     demo: "", // live/deployment URL (leave "" to hide)
-    image: "", // screenshot path/URL (leave "" to hide)
-  },
-  {
-    name: "Stage 2 — Project Title",
-    description: "Short description of what this project does.",
-    stack: ["Node.js", "PostgreSQL"],
-    contribution: "What you personally built and owned.",
-    repo: "",
-    demo: "",
     image: "",
   },
   {
-    name: "Stage 3 — Project Title",
+    name: "Project Title",
     description: "Short description of what this project does.",
-    stack: ["Python", "FastAPI"],
-    contribution: "What you personally built and owned.",
-    repo: "",
-    demo: "",
-    image: "",
-  },
-  {
-    name: "Stage 4 — Project Title",
-    description: "Short description of what this project does.",
-    stack: ["Node.js", "Redis"],
-    contribution: "What you personally built and owned.",
-    repo: "",
-    demo: "",
-    image: "",
-  },
-  {
-    name: "Stage 5 — Project Title",
-    description: "Short description of what this project does.",
-    stack: ["Django", "PostgreSQL"],
-    contribution: "What you personally built and owned.",
-    repo: "",
-    demo: "",
-    image: "",
-  },
-  {
-    name: "Stage 6 — Project Title",
-    description: "Short description of what this project does.",
-    stack: ["Node.js", "Docker"],
-    contribution: "What you personally built and owned.",
-    repo: "",
-    demo: "",
-    image: "",
-  },
-  {
-    name: "Stage 7 — Project Title",
-    description: "Short description of what this project does.",
-    stack: ["React", "Vite"],
+    stack: ["Node.js"],
     contribution: "What you personally built and owned.",
     repo: "",
     demo: "",
@@ -87,16 +67,18 @@ export const projects = [
 
 // Each skill should point back to a project (per the rubric).
 // Remove any skill you can't back with a project.
+const INSIGHTA = "Insighta Labs — Queryable Intelligence Engine";
+
 export const skills = [
-  { name: "API Design", project: "Stage 2 — Project Title" },
-  { name: "Authentication", project: "Stage 3 — Project Title" },
-  { name: "Databases", project: "Stage 2 — Project Title" },
-  { name: "Background Jobs", project: "Stage 4 — Project Title" },
-  { name: "Caching", project: "Stage 4 — Project Title" },
-  { name: "Testing", project: "Stage 5 — Project Title" },
-  { name: "Logging", project: "Stage 5 — Project Title" },
-  { name: "Deployment", project: "Stage 6 — Project Title" },
-  { name: "Documentation", project: "Stage 6 — Project Title" },
+  { name: "API Design", project: INSIGHTA },
+  { name: "Authentication (OAuth/PKCE + JWT)", project: INSIGHTA },
+  { name: "Databases (MongoDB)", project: INSIGHTA },
+  { name: "Caching", project: INSIGHTA },
+  { name: "Data Ingestion (streaming CSV)", project: INSIGHTA },
+  { name: "Testing (CI)", project: INSIGHTA },
+  { name: "Logging", project: INSIGHTA },
+  { name: "Deployment (Railway + GitHub Actions)", project: INSIGHTA },
+  { name: "Documentation", project: INSIGHTA },
 ];
 
 // Pick one project and go deeper.
