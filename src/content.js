@@ -8,7 +8,7 @@
 export const profile = {
   name: "Somtochukwu Emmanuel Umeh", // TODO: your full name
   title: "Full Stack and DevOps Engineer", // TODO: your role / title
-  bio: "Full Stack and DevOps engineer focused on building reliable APIs and services. I spent the HNG internship shipping real systems under real deadlines.", // TODO
+  bio: "Full stack and DevOps engineer focused on reliable APIs, production deployments, and systems you can defend under load. During HNG I shipped backend services, AI-integrated APIs, and a live security monitoring stack on real infrastructure.",
   location: "Northampton, United Kingdom (GMT+1)", // TODO: location or timezone
   email: "emmanueldennise99@gmail.com",
   github: "https://github.com/Nuel-09",
@@ -63,13 +63,21 @@ export const projects = [
     demo: "https://flowbrand-marketing-service.onrender.com/api/v1/docs",
     image: "",
   },
-  // --- Placeholder for upcoming projects. Fill or delete as projects come in. ---
   {
-    name: "Project Title",
-    description: "Short description of what this project does.",
-    stack: ["Node.js"],
-    contribution: "What you personally built and owned.",
-    repo: "",
+    name: "Anomaly Detection Engine (DevSecOps)",
+    description:
+      "Real-time HTTP anomaly detection for a Nextcloud stack behind Nginx on a VPS. A Python daemon tails JSON access logs, applies 60-second sliding-window rates and a rolling statistical baseline (z-score and spike rules), bans abusive IPs via host iptables, notifies Slack, keeps an audit trail, and exposes a live Flask metrics dashboard.",
+    stack: [
+      "Python",
+      "Docker Compose",
+      "Nginx",
+      "iptables",
+      "Flask",
+      "DigitalOcean",
+    ],
+    contribution:
+      "Designed and deployed the full stack on Ubuntu: Docker Compose for Nextcloud, Nginx, and the detector (host network + NET_ADMIN for DOCKER-USER iptables bans), UFW and cloud firewall rules, DuckDNS for the public dashboard, deque-based sliding windows and 30-minute rolling baselines with hourly slots, auto-unban backoff, and documented VPS setup end to end in the repo README.",
+    repo: "https://github.com/Nuel-09/DevSecOps-Project",
     demo: "",
     image: "",
   },
@@ -79,6 +87,7 @@ export const projects = [
 // Remove any skill you can't back with a project.
 const INSIGHTA = "Insighta Labs — Queryable Intelligence Engine";
 const FLOWBRAND = "Flowbrand Marketing Service (SEIL)";
+const DEVSECOPS = "Anomaly Detection Engine (DevSecOps)";
 
 export const skills = [
   { name: "API Design", project: FLOWBRAND },
@@ -91,6 +100,9 @@ export const skills = [
   { name: "Testing (CI)", project: FLOWBRAND },
   { name: "Deployment (Render + Docker)", project: FLOWBRAND },
   { name: "Documentation (Swagger)", project: FLOWBRAND },
+  { name: "DevOps (Docker Compose + VPS)", project: DEVSECOPS },
+  { name: "Security (anomaly detection + iptables)", project: DEVSECOPS },
+  { name: "Logging & monitoring", project: DEVSECOPS },
 ];
 
 // Featured deep dive — Flowbrand Marketing Service (SEIL).
@@ -118,6 +130,7 @@ export const featured = {
 
 // Honest, specific, concise.
 export const reflection = [
-  "What you learned during HNG — be specific about the skills and habits you picked up.",
-  "How you improved as a backend developer — concrete before/after, decisions you now make differently.",
+  "During HNG I moved from shipping isolated endpoints to owning full systems: Insighta Labs taught me to design APIs clients can trust (auth, RBAC, caching, ingestion at scale), Flowbrand SEIL pushed me to integrate AI safely behind strict schemas and clear error codes, and the DevSecOps anomaly engine forced me to think about production—firewalls, host networking, and automated response when traffic misbehaves.",
+  "I improved by documenting as I built (Swagger, README runbooks, architecture notes) and by testing failure paths early—invalid uploads, missing API keys, malformed model JSON, ban/unban cycles—instead of only the happy path. I now default to explicit validation, structured errors, and deployment steps a reviewer can reproduce without guessing env vars or ports.",
+  "The biggest shift is confidence under deadline: I can scope a backend or DevOps deliverable, break it into deployable pieces, and leave proof (repos, live URLs, metrics) that shows what I built and how it behaves in the real world.",
 ];
