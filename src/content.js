@@ -22,6 +22,26 @@ export const profile = {
 // the single `repo`/`demo` fields instead. Leave a field "" / [] to hide it.
 export const projects = [
   {
+    name: "Dilamme Job Scheduler (Stage 9)",
+    description:
+      "Full-stack background job scheduler for Dilamme (HNG Stage 9): REST API to create standalone, scheduled, recurring, and DAG workflow jobs; independent scheduler and worker processes; PostgreSQL as source of truth; Redis for distributed locks and SSE pub/sub; React dashboard with live updates.",
+    stack: [
+      "Node.js",
+      "TypeScript",
+      "Fastify",
+      "PostgreSQL",
+      "Redis",
+      "Drizzle ORM",
+      "React",
+      "pnpm",
+    ],
+    contribution:
+      "Built and deployed the monorepo end to end: Fastify API with Swagger and SSE event stream, scheduler daemon (indexed min-heap mirror, priority aging, due-job promotion), worker daemon (timing wheel for retries/recurring, handler registry, FOR UPDATE SKIP LOCKED claims + Redis locks), DLQ with manual retry and threshold alerts, transactional job_logs audit trail, React dashboard, VPS deploy with Nginx and DuckDNS.",
+    repo: "https://github.com/Nuel-09/dilamme-Job-Scheduler",
+    demo: "https://dilamme-jobscheduler.duckdns.org/",
+    image: "",
+  },
+  {
     name: "Insighta Labs — Queryable Intelligence Engine",
     description:
       "A profile-intelligence platform built around a queryable API. It enriches person-profile data (gender, age, nationality) from external providers and exposes advanced filtering, sorting, pagination, and rule-based natural-language search. Shipped with a global CLI and a React web portal as first-class clients.",
@@ -78,7 +98,7 @@ export const projects = [
     contribution:
       "Designed and deployed the full stack on Ubuntu: Docker Compose for Nextcloud, Nginx, and the detector (host network + NET_ADMIN for DOCKER-USER iptables bans), UFW and cloud firewall rules, DuckDNS for the public dashboard, deque-based sliding windows and 30-minute rolling baselines with hourly slots, auto-unban backoff, and documented VPS setup end to end in the repo README.",
     repo: "https://github.com/Nuel-09/DevSecOps-Project",
-    demo: "",
+    demo: "http://mydetector.duckdns.org",
     image: "",
   },
 ];
@@ -88,49 +108,54 @@ export const projects = [
 const INSIGHTA = "Insighta Labs — Queryable Intelligence Engine";
 const FLOWBRAND = "Flowbrand Marketing Service (SEIL)";
 const DEVSECOPS = "Anomaly Detection Engine (DevSecOps)";
+const DILAMME = "Dilamme Job Scheduler (Stage 9)";
 
 export const skills = [
-  { name: "API Design", project: FLOWBRAND },
+  { name: "API Design", project: DILAMME },
   { name: "Authentication (JWT)", project: FLOWBRAND },
-  { name: "Databases (PostgreSQL)", project: FLOWBRAND },
+  { name: "Databases (PostgreSQL)", project: DILAMME },
   { name: "Databases (MongoDB)", project: INSIGHTA },
+  { name: "Background Jobs", project: DILAMME },
+  { name: "Queues (heap + timing wheel)", project: DILAMME },
   { name: "Caching", project: INSIGHTA },
   { name: "Data Ingestion (PDF/DOCX + AI)", project: FLOWBRAND },
   { name: "Data Ingestion (streaming CSV)", project: INSIGHTA },
-  { name: "Testing (CI)", project: FLOWBRAND },
-  { name: "Deployment (Render + Docker)", project: FLOWBRAND },
-  { name: "Documentation (Swagger)", project: FLOWBRAND },
+  { name: "Testing (CI + integration)", project: DILAMME },
+  { name: "Deployment (VPS + Nginx + DuckDNS)", project: DILAMME },
+  { name: "Documentation (Swagger + architecture)", project: DILAMME },
   { name: "DevOps (Docker Compose + VPS)", project: DEVSECOPS },
   { name: "Security (anomaly detection + iptables)", project: DEVSECOPS },
-  { name: "Logging & monitoring", project: DEVSECOPS },
+  { name: "Logging & monitoring", project: DILAMME },
 ];
 
-// Featured deep dive — Flowbrand Marketing Service (SEIL).
+// Featured deep dive — Dilamme Job Scheduler (Stage 9).
 export const featured = {
-  projectName: "Flowbrand Marketing Service (SEIL)",
+  projectName: "Dilamme Job Scheduler (Stage 9)",
   summary:
-    "NestJS API that turns uploaded business documents into a four-stage marketing funnel using Claude, with JWT auth and Swagger-documented endpoints under /api/v1.",
+    "Distributed background job system with heap-based priority scheduling, DAG workflows, DLQ, hybrid timing-wheel retries, and a live React dashboard over SSE.",
   problem:
-    "SEIL targets small business owners who need a clear marketing plan but lack marketing expertise. The product must accept real business documents (PDF/DOCX), extract usable text, and return a consistent funnel structure (awareness, engagement, conversion, retention) that non-technical users can follow—without inventing unsupported claims from thin documents.",
+    "Dilamme needed reliable background processing: priority ordering without starvation, scheduled and recurring jobs, multi-step workflows with dependencies, safe retries, a dead-letter path for exhausted failures, and operators who could see job state change in real time—not poll a REST API every few seconds.",
   architecture:
-    "Clients call the API at global prefix /api/v1. A global ValidationPipe whitelists DTO fields. JWT guards protect funnel routes. Upload flow: Multer receives the file in memory (≤ 5 MiB), FunnelsUploadService validates MIME/extension, persists metadata and file under UPLOAD_STORAGE_ROOT, runs pdf-parse or mammoth extraction, and transitions status (uploading → processing → ready). Clients poll GET /funnels/upload/progress/:uploadId. Generation: POST /funnels/generate-from-upload with uploadId checks ownership and ready status, FunnelAiService calls Anthropic Messages API with a fixed system prompt and capped document text, coerceJsonFromModelText strips markdown fences, parseMarketingFunnelResult enforces the four string fields, and the result is stored in funnel_generations. Auth uses bcrypt + @nestjs/jwt. Interactive docs live at /api/v1/docs.",
+    "pnpm monorepo with four processes: Fastify API (REST + Swagger + SSE at /api/events), scheduler daemon (~500ms tick: priority aging, promote due pending jobs via indexed min-heap mirror, sweep overdue retries), and worker daemon(s) (claim with PostgreSQL FOR UPDATE SKIP LOCKED, Redis NX lock per job, run handlers, timing wheel for 1s/5s/25s backoff with jitter). PostgreSQL (Drizzle) is the source of truth for jobs, dependencies, and transactional job_logs; Redis is only locks and pub/sub. Flow: POST /api/jobs creates pending rows → scheduler promotes eligible jobs (DAG deps satisfied, scheduled_at <= now) → worker claims and executes → success completes or failure schedules retry/DLQ → Redis publishes to SSE for the React dashboard. Scheduler rebuilds heap from DB every ~60s; scheduler sweep releases awaiting_retry rows if a worker timing wheel is lost.",
   endpoints: [
-    { method: "POST", path: "/api/v1/auth/register", purpose: "Create account and return JWT." },
-    { method: "POST", path: "/api/v1/auth/login", purpose: "Issue JWT access token." },
-    { method: "POST", path: "/api/v1/funnels/upload", purpose: "Multipart PDF/DOCX upload; extract text and return uploadId + status." },
-    { method: "GET", path: "/api/v1/funnels/upload/progress/:uploadId", purpose: "Poll upload status for the authenticated owner." },
-    { method: "POST", path: "/api/v1/funnels/generate-from-upload", purpose: "Generate awareness/engagement/conversion/retention funnel from a ready upload via Claude." },
-    { method: "GET", path: "/api/v1/health", purpose: "Liveness check (no DB dependency)." },
+    { method: "POST", path: "/api/jobs", purpose: "Create standalone, scheduled, recurring, or DAG workflow jobs." },
+    { method: "GET", path: "/api/jobs", purpose: "List and filter jobs for the dashboard and API clients." },
+    { method: "GET", path: "/api/jobs/:id", purpose: "Fetch job detail, status, and execution metadata." },
+    { method: "POST", path: "/api/jobs/:id/cancel", purpose: "Cancel pending jobs immediately or flag in-flight jobs for safe abort." },
+    { method: "GET", path: "/api/dlq", purpose: "List dead-letter jobs after retries are exhausted." },
+    { method: "POST", path: "/api/dlq/:id/retry", purpose: "Manually requeue a failed job from the DLQ." },
+    { method: "GET", path: "/api/events", purpose: "SSE stream; Redis pub/sub pushes live job transitions to the UI." },
+    { method: "GET", path: "/health", purpose: "Liveness check for deploy and Nginx routing." },
   ],
   challenge:
-    "Claude sometimes returned JSON wrapped in markdown code fences or omitted required funnel fields, which broke parsing and left the API returning opaque 502 errors to clients.",
+    "Running multiple worker processes risked duplicate execution, and in-memory timing wheels are lost on worker restart—so retries and recurring schedules could stall unless the database and scheduler could recover them without double-firing jobs.",
   solution:
-    "Added coerceJsonFromModelText to strip ```json fences when the model ignores instructions, and parseMarketingFunnelResult to validate exactly four non-empty string keys (awareness, engagement, conversion, retention) with clear errors. Unit tests cover parsing edge cases in funnel-ai.service.spec.ts. Upload paths return structured SeilException codes (e.g. UPLOAD_NOT_READY, AI_NOT_CONFIGURED) so clients and Swagger consumers get actionable messages instead of generic failures.",
+    "Workers claim with FOR UPDATE SKIP LOCKED so only one row owner wins per job, then acquire a Redis job:{id}:lock (NX EX 300) before running handlers. Failed runs set awaiting_retry=true and scheduled_at in PostgreSQL while the timing wheel handles the fast path; the scheduler sweep idempotently clears awaiting_retry when scheduled_at <= now, and workers rebuild their wheels from DB on startup. Every status change writes job_logs in the same transaction as the job update, and SSE events keep the dashboard consistent without polling.",
 };
 
 // Honest, specific, concise.
 export const reflection = [
-  "During HNG I moved from shipping isolated endpoints to owning full systems: Insighta Labs taught me to design APIs clients can trust (auth, RBAC, caching, ingestion at scale), Flowbrand SEIL pushed me to integrate AI safely behind strict schemas and clear error codes, and the DevSecOps anomaly engine forced me to think about production—firewalls, host networking, and automated response when traffic misbehaves.",
-  "I improved by documenting as I built (Swagger, README runbooks, architecture notes) and by testing failure paths early—invalid uploads, missing API keys, malformed model JSON, ban/unban cycles—instead of only the happy path. I now default to explicit validation, structured errors, and deployment steps a reviewer can reproduce without guessing env vars or ports.",
-  "The biggest shift is confidence under deadline: I can scope a backend or DevOps deliverable, break it into deployable pieces, and leave proof (repos, live URLs, metrics) that shows what I built and how it behaves in the real world.",
+  "During HNG I moved from shipping isolated endpoints to owning full systems: Insighta Labs taught me multi-client auth and API hardening, Flowbrand SEIL pushed me to integrate AI behind strict schemas, the DevSecOps engine forced production thinking (firewalls, iptables, live metrics), and Dilamme Stage 9 tied it together (background jobs, queues, durability, and a dashboard that stays live over SSE).",
+  "I improved by documenting as I built (Swagger, architecture docs, deployment runbooks) and by designing for failure early, duplicate worker claims, lost timing wheels, malformed LLM JSON, ban/unban cycles, etc. instead of only the happy path. I now default to PostgreSQL as source of truth, explicit state machines, structured errors, and deploy steps a reviewer can reproduce.",
+  "The biggest shift is confidence under deadline: I can scope a backend or DevOps deliverable, split it into API/scheduler/worker boundaries when needed, and leave proof (repos, live URLs, Swagger) that shows what I built and how it behaves on real infrastructure.",
 ];
